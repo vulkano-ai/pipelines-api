@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PipelinesModule } from './pipelines/pipelines.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TerminusModule } from '@nestjs/terminus';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
+import { PipelinesModule } from './pipelines/pipelines.module';
 import AppConfig, { mongoDbConfigFactory } from './app.config';
+import { HealthCheckController } from './healthcheck/healthcheck.controller';
 
 @Module({
   imports: [
@@ -14,13 +16,13 @@ import AppConfig, { mongoDbConfigFactory } from './app.config';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      connectionName: 'main',
       useFactory: mongoDbConfigFactory,
       inject: [ConfigService],
     }),
     PipelinesModule,
+    TerminusModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthCheckController],
   providers: [AppService],
 })
 export class AppModule {}
