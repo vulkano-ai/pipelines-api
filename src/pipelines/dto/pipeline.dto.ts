@@ -10,7 +10,6 @@ export class PipelineDto {
       .valid(...availableProtocols)
       .required(),
   )
-  @JoiSchema([CREATE, UPDATE], Joi.string().required())
   inputProtocol!: string;
 
   @JoiSchema(
@@ -18,14 +17,17 @@ export class PipelineDto {
       .valid(...availableProtocols)
       .required(),
   )
-  @JoiSchema([CREATE, UPDATE], Joi.string().required())
   outputProtocol!: string;
 
   @JoiSchema(
-    Joi.array().items(
-      Joi.alternatives(getTypeSchema(SuperResolutionFilterDto)),
-    ),
+    Joi.array()
+      .min(1)
+      .items(
+        Joi.alternatives()
+          .match('any')
+          .try(getTypeSchema(SuperResolutionFilterDto)),
+      )
+      .required(),
   )
-  @JoiSchema([CREATE, UPDATE], Joi.array().required())
   filters!: SuperResolutionFilterDto[];
 }
