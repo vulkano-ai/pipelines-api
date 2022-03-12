@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
-import { CreatePipelineDto } from './dto/create-pipeline.dto';
-import { UpdatePipelineDto } from './dto/update-pipeline.dto';
+import { PipelineDto } from './dto/pipeline.dto';
 
 @Controller('pipelines')
 export class PipelinesController {
   constructor(private readonly pipelinesService: PipelinesService) {}
 
   @Post()
-  create(@Body() createPipelineDto: CreatePipelineDto) {
+  create(@Body() createPipelineDto: PipelineDto) {
     return this.pipelinesService.create(createPipelineDto);
   }
 
@@ -23,7 +30,7 @@ export class PipelinesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePipelineDto: UpdatePipelineDto) {
+  update(@Param('id') id: string, @Body() updatePipelineDto: PipelineDto) {
     return this.pipelinesService.update(+id, updatePipelineDto);
   }
 

@@ -1,13 +1,13 @@
-import getenv from 'getenv';
+import { ConfigService } from '@nestjs/config';
 
-export interface AppConfig {
-  mongoUri: string;
-  port: number;
-  env: string;
-}
+export default () => ({
+  port: parseInt(process.env.PORT, 10) || 3000,
+  mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/rtmp-api',
+  env: process.env.ENVIRONMENT || 'dev',
+});
 
-export const config: AppConfig = {
-  mongoUri: getenv.string('MONGODEB_URI', 'mongoddb://localhost:27017'),
-  port: getenv.number('PORT', 8080),
-  env: getenv.string('ENVIRONMENT', 'dev'),
-};
+export const mongoDbConfigFactory = async (config: ConfigService) => ({
+  uri: config.get('mongoUri'),
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
