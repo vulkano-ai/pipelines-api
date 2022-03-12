@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePipelineDto } from './dto/create-pipeline.dto';
-import { UpdatePipelineDto } from './dto/update-pipeline.dto';
+import { PipelineDto } from './dto/pipeline.dto';
 
 @Injectable()
 export class PipelinesService {
-  create(createPipelineDto: CreatePipelineDto) {
+  create(createPipelineDto: PipelineDto) {
     return 'This action adds a new pipeline';
   }
 
@@ -16,7 +15,7 @@ export class PipelinesService {
     return `This action returns a #${id} pipeline`;
   }
 
-  update(id: number, updatePipelineDto: UpdatePipelineDto) {
+  update(id: number, updatePipelineDto: PipelineDto) {
     return `This action updates a #${id} pipeline`;
   }
 
