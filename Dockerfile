@@ -3,6 +3,7 @@ FROM node:latest
 COPY . /usr/src/app
 
 WORKDIR /usr/src/app
+RUN npm i
 
 RUN npm run build
 
