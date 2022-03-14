@@ -6,8 +6,12 @@ export default () => ({
   env: process.env.ENVIRONMENT || 'dev',
 });
 
+console.log(process.env.MONGODB_URI);
+
 export const mongoDbConfigFactory = async (config: ConfigService) => ({
   uri: config.get('mongoUri'),
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+export const availableProtocols = ['RTMP'];
