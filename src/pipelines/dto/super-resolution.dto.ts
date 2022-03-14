@@ -1,4 +1,4 @@
-import { CREATE, getTypeSchema, JoiSchema, UPDATE } from 'nestjs-joi';
+import { getTypeSchema, JoiSchema } from 'nestjs-joi';
 import * as Joi from 'joi';
 
 class SuperResolutionFilterConfigDto {

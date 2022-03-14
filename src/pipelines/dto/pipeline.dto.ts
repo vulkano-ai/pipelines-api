@@ -1,8 +1,7 @@
 import { JoiSchema, CREATE, UPDATE, getTypeSchema } from 'nestjs-joi';
 import * as Joi from 'joi';
 import { SuperResolutionFilterDto } from './super-resolution.dto';
-
-const availableProtocols = ['RTMP'];
+import { availableProtocols } from '../../app.config';
 
 export class PipelineDto {
   @JoiSchema(
