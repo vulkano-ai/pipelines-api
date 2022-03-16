@@ -1,6 +1,6 @@
-FROM node:lts
+FROM node:15.14.0-alpine
 
-RUN mkdir /usr/src/app
+RUN mkdir -p /usr/src/app
 COPY package.json /usr/src/app/
 COPY package-lock.json /usr/src/app/
 

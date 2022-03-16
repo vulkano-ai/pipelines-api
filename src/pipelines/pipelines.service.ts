@@ -6,7 +6,8 @@ import { PipelineModel, PipelineDocument } from './schemas/pipeline.schema';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
-import { pipe } from 'rxjs';
+import { InjectAmqpConnection } from 'nestjs-amqp';
+import { Connection } from 'amqplib';
 
 export interface RedirectBody {
   app: string;
@@ -29,6 +30,8 @@ export class PipelinesService {
     private pipelineModel: Model<PipelineDocument>,
     @InjectPinoLogger('Pipelines service')
     private readonly logger: PinoLogger,
+    @InjectAmqpConnection()
+    private readonly amqp: Connection,
     private configService: ConfigService,
   ) {
     this.rtmpServerUri = this.configService.get('rtmpServerUri');
@@ -50,27 +53,17 @@ export class PipelinesService {
     };
   }
 
-  async publicStreamRedirect(redirectBody: RedirectBody) {
-    this.logger.info({ redirectBody });
+  findAll() {
+    return `This action returns all pipelines`;
+  }
 
-    if (redirectBody.app !== 'app') {
-      return undefined;
-    }
-    const pipeline = await this.pipelineModel.findOne({
-      streamKey: redirectBody.name,
-    });
+  async findOne(filter: Record<string, any>): Promise<PipelineDocument> {
+    const pipeline = await this.pipelineModel.findOne(filter);
     this.logger.info({ pipeline: pipeline.toJSON() });
     if (!pipeline) {
       throw new Error('Pipeline not found');
     }
     return pipeline;
-  }
-  findAll() {
-    return `This action returns all pipelines`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} pipeline`;
   }
 
   update(id: number, updatePipelineDto: PipelineDto) {

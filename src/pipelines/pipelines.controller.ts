@@ -12,6 +12,7 @@ import { PipelinesService, RedirectBody } from './pipelines.service';
 import { PipelineDto } from './dto/pipeline.dto';
 import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
 import { Response } from 'express';
+import { PipelineQueue } from './pipeline.queue';
 
 @Controller('pipelines')
 export class PipelinesController {
@@ -19,8 +20,14 @@ export class PipelinesController {
     private readonly pipelinesService: PipelinesService,
     @InjectPinoLogger('Pipelines controller')
     private readonly logger: PinoLogger,
+    private readonly queueController: PipelineQueue,
   ) {}
 
+  private checkRTMPApp(redirectBody: RedirectBody) {
+    if (redirectBody.app !== 'app') {
+      throw new Error('Invalid RTMP app');
+    }
+  }
   @Post('stream-redirect')
   async streamRedirect(
     @Body() redirectBody: RedirectBody,
@@ -28,9 +35,15 @@ export class PipelinesController {
   ) {
     try {
       this.logger.info({ redirectBody }, 'Stream redirect received');
-      const pipeline = await this.pipelinesService.publicStreamRedirect(
-        redirectBody,
-      );
+      this.checkRTMPApp(redirectBody);
+
+      const pipeline = await this.pipelinesService.findOne({
+        streamKey: redirectBody.name,
+      });
+
+      await this.queueController.enqueuePipeline({
+        ...pipeline.toObject(),
+      });
       response.sendStatus(200);
     } catch (error) {
       this.logger.error(error);
@@ -50,7 +63,7 @@ export class PipelinesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.pipelinesService.findOne(+id);
+    return this.pipelinesService.findOne({});
   }
 
   @Patch(':id')
