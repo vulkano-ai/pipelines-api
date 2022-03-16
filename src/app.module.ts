@@ -8,7 +8,6 @@ import { PipelinesModule } from './pipelines/pipelines.module';
 import AppConfig, { mongoDbConfigFactory } from './app.config';
 import { HealthCheckController } from './healthcheck/healthcheck.controller';
 import { LoggerModule } from 'nestjs-pino';
-import { AmqpModule } from 'nestjs-amqp';
 
 @Module({
   imports: [
@@ -19,10 +18,6 @@ import { AmqpModule } from 'nestjs-amqp';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: mongoDbConfigFactory,
-      inject: [ConfigService],
-    }),
-    AmqpModule.forRootAsync({
-      useFactory: (config: ConfigService) => config.get('amqp'),
       inject: [ConfigService],
     }),
     LoggerModule.forRoot(),
