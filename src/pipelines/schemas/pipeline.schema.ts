@@ -5,7 +5,7 @@ import * as mongoose from 'mongoose';
 
 export type PipelineDocument = PipelineModel & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class PipelineModel {
   @Prop({ type: String, enum: availableProtocols, required: true })
   inputProtocol: string;
@@ -30,4 +30,6 @@ export class PipelineModel {
   filters: string;
 }
 
-export const PipelineSchema = SchemaFactory.createForClass(PipelineModel);
+const _PipelineSchema = SchemaFactory.createForClass(PipelineModel);
+
+export const PipelineSchema = _PipelineSchema;

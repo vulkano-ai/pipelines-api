@@ -1,9 +1,14 @@
-FROM node:latest
+FROM node:lts
 
-COPY . /usr/src/app
+RUN mkdir /usr/src/app
+COPY package.json /usr/src/app/
+COPY package-lock.json /usr/src/app/
+
 
 WORKDIR /usr/src/app
 RUN npm i
+
+COPY . /usr/src/app
 
 RUN npm run build
 
