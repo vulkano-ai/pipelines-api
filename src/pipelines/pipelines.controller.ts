@@ -6,12 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  Res,
+  Res, Req,
 } from '@nestjs/common';
 import { PipelinesService, RedirectBody } from './pipelines.service';
 import { PipelineDto } from './dto/pipeline.dto';
 import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { PipelineQueue } from './pipeline.queue';
 
 @Controller('pipelines')
@@ -32,6 +32,7 @@ export class PipelinesController {
   async streamRedirect(
     @Body() redirectBody: RedirectBody,
     @Res() response: Response,
+    @Req() request: Request,
   ) {
     try {
       this.logger.info({ redirectBody }, 'Stream redirect received');
@@ -42,7 +43,12 @@ export class PipelinesController {
       });
 
       await this.queueController.enqueuePipeline({
-        ...pipeline.toObject(),
+        id: pipeline.id,
+        inputProtocol: 'RTMP',
+        outputProtocol: 'RTMP',
+        filters: pipeline.filters,
+        inputUri: `rtmp://${request.ip}:1935/app/${pipeline.streamKey}`,
+        outputUri: `rtmp://${request.ip}:1935/out/${pipeline.privateStreamKey}`,
       });
       response.sendStatus(200);
     } catch (error) {
