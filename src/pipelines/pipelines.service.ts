@@ -6,21 +6,7 @@ import { PipelineModel, PipelineDocument } from './schemas/pipeline.schema';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
-import { InjectAmqpConnection } from 'nestjs-amqp';
 import { Connection } from 'amqplib';
-
-export interface RedirectBody {
-  app: string;
-  flashver: string;
-  swfurl: string;
-  tcurl: string;
-  pageurl: string;
-  addr: string;
-  clientid: string;
-  call: string;
-  name: string;
-  type: string;
-}
 
 @Injectable()
 export class PipelinesService {
@@ -30,8 +16,7 @@ export class PipelinesService {
     private pipelineModel: Model<PipelineDocument>,
     @InjectPinoLogger('Pipelines service')
     private readonly logger: PinoLogger,
-    @InjectAmqpConnection()
-    private readonly amqp: Connection,
+
     private configService: ConfigService,
   ) {
     this.rtmpServerUri = this.configService.get('rtmpServerUri');

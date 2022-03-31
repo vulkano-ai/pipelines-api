@@ -5,6 +5,7 @@ export default () => ({
   mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/rtmp-api',
   env: process.env.ENVIRONMENT || 'dev',
   rtmpServerUri: process.env.RTMP_SERVER_URI || 'rtmp://localhost:1935',
+  rabbitMqUri: process.env.RABBITMQ_URI || 'amqp://user:password@localhost:5672',
   amqp: {
     hostname: process.env.RABBITMQ_HOST || 'localhost',
     username: process.env.RABBITMQ_USER || 'user',

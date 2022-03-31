@@ -27,7 +27,7 @@ export class PipelineModel {
       }),
     ],
   })
-  filters: string;
+  filters: Record<string, any>;
 }
 
 const _PipelineSchema = SchemaFactory.createForClass(PipelineModel);

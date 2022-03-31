@@ -8,6 +8,7 @@ import { PipelinesModule } from './pipelines/pipelines.module';
 import AppConfig, { mongoDbConfigFactory } from './app.config';
 import { HealthCheckController } from './healthcheck/healthcheck.controller';
 import { LoggerModule } from 'nestjs-pino';
+import { RtmpStreamModule } from './rtmp-stream/rtmp-stream.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LoggerModule } from 'nestjs-pino';
     LoggerModule.forRoot(),
     PipelinesModule,
     TerminusModule,
+    RtmpStreamModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [AppService],
