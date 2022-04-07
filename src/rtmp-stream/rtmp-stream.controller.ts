@@ -114,7 +114,7 @@ export class RtmpStreamController {
       }
       await this.rtmpStreamService.update(stream.id, {
         status: StreamStatus.ACTIVE,
-        addr: ,
+        addr: serverIp,
       });
       this.logger.info({ stream }, 'Stream created');
 
