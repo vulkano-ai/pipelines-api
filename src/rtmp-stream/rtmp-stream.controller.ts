@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Query, Req, Res} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { Request, Response } from 'express';
 import { RtmpStreamDto } from './dto/rtmp-stream.dto';
@@ -80,13 +80,11 @@ export class RtmpStreamController {
       },
       userId: 'test',
     });
-    setTimeout(() => {
-      channel.sendToQueue(
-        this.QUEUE_NAME,
-        Buffer.from(CreatePipelineRequest.encode(job).finish()),
-      );
-    }, 5000);
 
+    channel.sendToQueue(
+      this.QUEUE_NAME,
+      Buffer.from(CreatePipelineRequest.encode(job).finish()),
+    );
   }
   @Get('/')
   async getStreams() {
@@ -101,7 +99,7 @@ export class RtmpStreamController {
   ) {
     try {
       let serverIp = request.socket.remoteAddress;
-      serverIp = serverIp.replace('::ffff:', '')
+      serverIp = serverIp.replace('::ffff:', '');
       this.logger.info({ body }, `Stream redirect received: ${serverIp}`);
       this.checkRTMPApp(body);
 
