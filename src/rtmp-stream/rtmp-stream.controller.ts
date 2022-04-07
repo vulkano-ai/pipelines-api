@@ -100,8 +100,8 @@ export class RtmpStreamController {
     @Req() request: Request,
   ) {
     try {
-      const serverIp =
-        request.headers['x-forwarded-for'] || request.socket.remoteAddress;
+      let serverIp = request.socket.remoteAddress;
+      serverIp = serverIp.replace('::ffff:', '')
       this.logger.info({ body }, `Stream redirect received: ${serverIp}`);
       this.checkRTMPApp(body);
 
@@ -114,7 +114,7 @@ export class RtmpStreamController {
       }
       await this.rtmpStreamService.update(stream.id, {
         status: StreamStatus.ACTIVE,
-        addr: serverIp,
+        addr: ,
       });
       this.logger.info({ stream }, 'Stream created');
 
