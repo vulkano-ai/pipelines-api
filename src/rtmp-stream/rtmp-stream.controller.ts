@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {Body, Controller, Get, Post, Query, Req, Res} from '@nestjs/common';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { Request, Response } from 'express';
 import { RtmpStreamDto } from './dto/rtmp-stream.dto';
@@ -49,7 +49,10 @@ export class RtmpStreamController {
       throw new Error('Invalid RTMP app');
     }
   }
-  async enqueuePipeline(pipeline: PipelineDocument, serverIp: string) {
+  async enqueuePipeline(
+    pipeline: PipelineDocument,
+    serverIp: string | string[],
+  ) {
     const channel = await this.connection.connection.createChannel();
     await channel.assertQueue(this.QUEUE_NAME);
 
@@ -97,7 +100,9 @@ export class RtmpStreamController {
     @Req() request: Request,
   ) {
     try {
-      this.logger.info({ body }, 'Stream redirect received');
+      const serverIp =
+        request.headers['x-forwarded-for'] || request.socket.remoteAddress;
+      this.logger.info({ body }, `Stream redirect received: ${serverIp}`);
       this.checkRTMPApp(body);
 
       const pipeline = await this.pipelineModel.findOne({
@@ -109,11 +114,11 @@ export class RtmpStreamController {
       }
       await this.rtmpStreamService.update(stream.id, {
         status: StreamStatus.ACTIVE,
-        addr: body.addr,
+        addr: serverIp,
       });
       this.logger.info({ stream }, 'Stream created');
 
-      await this.enqueuePipeline(pipeline, body.addr);
+      await this.enqueuePipeline(pipeline, serverIp);
       response.sendStatus(200);
     } catch (error) {
       this.logger.error(error);
