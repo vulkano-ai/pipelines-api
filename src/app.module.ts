@@ -2,16 +2,28 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
-import { AppService } from './app.service';
-import { AppController } from './app.controller';
-import { PipelinesModule } from './pipelines/pipelines.module';
-import AppConfig, { mongoDbConfigFactory } from './app.config';
-import { HealthCheckController } from './healthcheck/healthcheck.controller';
+import { PipelinesModule } from './modules/pipelines/pipelines.module';
+import AppConfig, {
+  loggerConfigFactory,
+  mongoDbConfigFactory,
+  multerConfigFactory,
+} from './config';
+import { HealthCheckController } from './modules/healthcheck/healthcheck.controller';
 import { LoggerModule } from 'nestjs-pino';
-import { RtmpStreamModule } from './rtmp-stream/rtmp-stream.module';
+import { RtmpStreamModule } from './modules/rtmp-stream/rtmp-stream.module';
+import { JoiPipeModule } from 'nestjs-joi';
+import { QueueModule } from './modules/queue/queue.module';
+import { HlsModule } from './modules/hls/hls.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    JoiPipeModule,
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: multerConfigFactory,
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [AppConfig],
@@ -21,12 +33,18 @@ import { RtmpStreamModule } from './rtmp-stream/rtmp-stream.module';
       useFactory: mongoDbConfigFactory,
       inject: [ConfigService],
     }),
-    LoggerModule.forRoot(),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: loggerConfigFactory,
+      inject: [ConfigService],
+    }),
     PipelinesModule,
     TerminusModule,
     RtmpStreamModule,
+    QueueModule,
+    HlsModule,
   ],
-  controllers: [AppController, HealthCheckController],
-  providers: [AppService],
+  controllers: [HealthCheckController],
+  providers: [],
 })
 export class AppModule {}
