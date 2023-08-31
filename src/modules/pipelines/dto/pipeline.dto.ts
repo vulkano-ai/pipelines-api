@@ -4,7 +4,7 @@ import {
   AudioFilter,
   Pipeline,
   VideoFilter,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 import {
   VideoFilterArtifactReductionDto,
   VideoFilterDenoiseDto,

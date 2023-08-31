@@ -12,7 +12,7 @@ import {
   InputProvider,
   OutputProtocol,
   OutputProvider,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 
 const pipelineData = {
   streamKey: 'test',

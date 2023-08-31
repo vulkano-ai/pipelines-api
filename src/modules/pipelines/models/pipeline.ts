@@ -8,7 +8,7 @@ import {
   AudioFilter,
   VideoFilter,
   HttpMethod,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 
 import {
   PipelineOutputSchema,

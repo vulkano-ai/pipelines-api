@@ -24,7 +24,7 @@
     "@golevelup/nestjs-rabbitmq": "^3.5.0",
     "@grpc/grpc-js": "^1.8.10",
     "@grpc/proto-loader": "^0.7.5",
-    "@livestream-ml/inference-io-proto": "=0.10.1",
+    "@inference/inference-proto": "=1.0.0",
     "@nestjs/common": "^9.3.9",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.3.9",

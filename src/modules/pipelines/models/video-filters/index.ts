@@ -1,5 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import { VideoFilter } from '@livestream-ml/inference-io-proto/nest';
+import { VideoFilter } from '@inference/inference-proto/nest';
 import { VideoDenoiseModel } from './denoise';
 import { VideoSuperResolutionModel } from './super-res';
 import { VideoArtifactReductionFilterModel } from './artifact-reduction';

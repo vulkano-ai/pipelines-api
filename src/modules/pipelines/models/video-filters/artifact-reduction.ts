@@ -3,7 +3,7 @@ import {
   VideoArtifactReductionFilter,
   VideoArtifactReductionFilterConfig,
   VideoFilterName,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 
 @Schema()
 export class VideoArtifactReductionFilterConfigModel

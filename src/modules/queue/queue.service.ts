@@ -7,7 +7,7 @@ import { AmqpConfig } from '../../config';
 import {
   StartPipelineRequest,
   Pipeline,
-} from '@livestream-ml/inference-io-proto/ts';
+} from '@inference/inference-proto/ts';
 
 @Injectable()
 export class QueueService {

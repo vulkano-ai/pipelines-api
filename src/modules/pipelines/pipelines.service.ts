@@ -17,7 +17,7 @@ import {
   OutputProvider,
   PipelineInput,
   PipelineOutput,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 import { PipelineOutputModel } from './models/providers';
 
 export type Pipeline = {

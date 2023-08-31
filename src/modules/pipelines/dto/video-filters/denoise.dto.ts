@@ -2,7 +2,7 @@ import {
   VideoDenoiseFilter,
   VideoFilterName,
   VideoDenoiseFilterConfig,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 import { getTypeSchema, JoiSchema } from 'nestjs-joi';
 import * as Joi from 'joi';
 

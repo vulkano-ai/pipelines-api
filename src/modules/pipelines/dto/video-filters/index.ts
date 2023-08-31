@@ -1,4 +1,4 @@
-import { VideoFilter } from '@livestream-ml/inference-io-proto/nest';
+import { VideoFilter } from '@inference/inference-proto/nest';
 import { VideoDenoiseDto } from './denoise.dto';
 import { VideoSuperResolutionDto } from './super-res.dto';
 import { VideoArtifactReductionDto } from './artifact-reduction.dto';

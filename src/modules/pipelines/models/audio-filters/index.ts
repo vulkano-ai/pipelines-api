@@ -1,4 +1,4 @@
-import { AudioFilter } from '@livestream-ml/inference-io-proto/nest';
+import { AudioFilter } from '@inference/inference-proto/nest';
 import { Schema } from '@nestjs/mongoose';
 import { AudioDenoiseFilterModel } from './denoise';
 

@@ -15,7 +15,7 @@ import {
   OutputProtocol,
   OutputProvider,
   PipelineOutput,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 import { WrongPipelineOutputException } from './errors';
 import { ConfigService } from '@nestjs/config';
 

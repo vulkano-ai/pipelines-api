@@ -13,7 +13,7 @@ import {
   InputProvider,
   OutputProtocol,
   OutputProvider,
-} from '@livestream-ml/inference-io-proto/nest';
+} from '@inference/inference-proto/nest';
 
 // TODO: test pipeline nested field validation
 const pipelineData = {
