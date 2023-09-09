@@ -4,10 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 
 import { AmqpConfig } from '../../config';
-import {
-  StartPipelineRequest,
-  Pipeline,
-} from '@inference/inference-proto/ts';
+import { StartPipelineRequest, Pipeline } from '@inference/inference-proto/ts';
 
 @Injectable()
 export class QueueService {
@@ -19,6 +16,7 @@ export class QueueService {
     private configService: ConfigService,
   ) {
     const exchanges = configService.get<AmqpConfig>('amqp').exchanges;
+    
     this.PIPELINES_QUEUE = exchanges.pipelines;
   }
 

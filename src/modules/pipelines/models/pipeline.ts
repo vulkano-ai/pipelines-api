@@ -21,6 +21,8 @@ import {
 import { VideoFilterModel } from './video-filters';
 import { AudioFilterModel } from './audio-filters';
 import { RtmpStreamDocument } from '../../rtmp-stream/models/rtmp-stream';
+import { JoiSchema, getTypeSchema } from 'nestjs-joi';
+import * as Joi from 'joi';
 
 export type PipelineDocument = PipelineModel & Document;
 
@@ -38,27 +40,33 @@ export type PipelineView = {
 export class PipelineModel implements Pipeline {
   _id: mongoose.Types.ObjectId;
 
+  @JoiSchema(Joi.array().items(getTypeSchema(PipelineInputModel)).required())
   @Prop({
     required: true,
     type: [PipelineInputSchema],
   })
   input: PipelineInputDocument[];
 
+  @JoiSchema(Joi.array().items(getTypeSchema(PipelineOutputModel)).required())
   @Prop({
     required: true,
     type: [PipelineOutputSchema],
   })
   output: PipelineOutputDocument[];
 
+  @JoiSchema(Joi.array().items(getTypeSchema(VideoFilterModel)))
   @Prop({ required: true })
   videoFilters: VideoFilterModel[];
 
+  @JoiSchema(Joi.array().items(getTypeSchema(AudioFilterModel)))
   @Prop({ required: true })
   audioFilters: AudioFilterModel[];
+
 
   @Prop({ type: String, required: true })
   streamKey: string;
 
+  @JoiSchema(Joi.boolean().default(false))
   @Prop({ type: Boolean, required: true, default: false })
   record: boolean;
 
