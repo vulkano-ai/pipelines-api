@@ -37,17 +37,23 @@ variables:
 
 build-stg:
   stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
   extends:
     - .build_and_push_image
     - .only_dev_tags
     - .stg_environment
 
 build-prod:
- stage: build
- extends:
-   - .build_and_push_image
-   - .only_prod_tags
-   - .prod_environment
+  stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  extends:
+    - .build_and_push_image
+    - .only_prod_tags
+    - .prod_environment
 
 pre-release:
   stage: release
