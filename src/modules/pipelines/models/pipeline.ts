@@ -8,7 +8,7 @@ import {
   AudioFilter,
   VideoFilter,
   HttpMethod,
-} from '@inference/inference-proto/nest';
+} from '@inference/inference-proto/ts';
 
 import {
   PipelineOutputSchema,
@@ -21,6 +21,8 @@ import {
 import { VideoFilterModel } from './video-filters';
 import { AudioFilterModel } from './audio-filters';
 import { RtmpStreamDocument } from '../../rtmp-stream/models/rtmp-stream';
+import { JoiSchema, getTypeSchema } from 'nestjs-joi';
+import * as Joi from 'joi';
 
 export type PipelineDocument = PipelineModel & Document;
 
@@ -28,8 +30,8 @@ export type PipelineView = {
   _id: string;
   streamKey: string;
   record: boolean;
-  input: PipelineInput[];
-  output: PipelineOutput[];
+  inputs: PipelineInput[];
+  outputs: PipelineOutput[];
   videoFilters: VideoFilter[];
   audioFilters: AudioFilter[];
 };
@@ -38,35 +40,40 @@ export type PipelineView = {
 export class PipelineModel implements Pipeline {
   _id: mongoose.Types.ObjectId;
 
+  @JoiSchema(Joi.array().items(getTypeSchema(PipelineInputModel)).required())
   @Prop({
     required: true,
     type: [PipelineInputSchema],
   })
-  input: PipelineInputDocument[];
+  inputs: PipelineInputDocument[];
 
+  @JoiSchema(Joi.array().items(getTypeSchema(PipelineOutputModel)).required())
   @Prop({
     required: true,
     type: [PipelineOutputSchema],
   })
-  output: PipelineOutputDocument[];
+  outputs: PipelineOutputDocument[];
 
+  @JoiSchema(Joi.array().items(getTypeSchema(VideoFilterModel)))
   @Prop({ required: true })
   videoFilters: VideoFilterModel[];
 
+  @JoiSchema(Joi.array().items(getTypeSchema(AudioFilterModel)))
   @Prop({ required: true })
   audioFilters: AudioFilterModel[];
 
   @Prop({ type: String, required: true })
   streamKey: string;
 
+  @JoiSchema(Joi.boolean().default(false))
   @Prop({ type: Boolean, required: true, default: false })
   record: boolean;
 
   view(): PipelineView {
     return {
       _id: this._id.toString(),
-      input: this.input,
-      output: this.output,
+      inputs: this.inputs,
+      outputs: this.outputs,
       record: this.record,
       streamKey: this.streamKey,
       videoFilters: this.videoFilters,
@@ -76,28 +83,28 @@ export class PipelineModel implements Pipeline {
 
   setRtmpStream(stream: RtmpStreamDocument) {
     console.log(this);
-    const rtmpInput = this.input.findIndex((i) => i.isAnInternalRtmpInput());
+    const rtmpInput = this.inputs.findIndex((i) => i.isAnInternalRtmpInput());
 
     if (!!~rtmpInput) {
-      this.input[rtmpInput].rtmpConfig = {
+      this.inputs[rtmpInput].rtmpConfig = {
         uri: `rtmp://${stream.addr}/app/${this.streamKey}`,
       };
     }
   }
 
   setHlsOutput(baseUrl: string, streamId: string) {
-    const hlsOutput = this.output.findIndex((o) => o.isAnInternalHlsOutput());
-    console.log(this.output);
+    const hlsOutput = this.outputs.findIndex((o) => o.isAnInternalHlsOutput());
+    console.log(this.outputs);
     console.log(hlsOutput);
     if (!!~hlsOutput) {
-      this.output[hlsOutput].hlsConfig = {
+      this.outputs[hlsOutput].hlsConfig = {
         uri: `${baseUrl}/hls/${this._id.toString()}/${streamId}`,
         method: HttpMethod.POST,
       };
     }
   }
   getInternalHlsOutput() {
-    return this.output.find((o) => o.isAnInternalHlsOutput());
+    return this.outputs.find((o) => o.isAnInternalHlsOutput());
   }
 }
 

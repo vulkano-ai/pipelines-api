@@ -12,29 +12,26 @@ import {
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { getTypeSchema, JoiSchema } from 'nestjs-joi';
 import * as Joi from 'joi';
-import {
-  HlsProviderConfigDto,
-  RtmpProviderConfigDto,
-} from '../../dto/providers';
 
+function enumValues(enumType: any) {
+  return Object.values(enumType).filter((v) => v !== enumType.UNRECOGNIZED);
+}
 @Schema()
 export class HlsProviderConfigModel implements HlsProviderConfig {
-  @JoiSchema(Joi.string().required())
+  
+  @JoiSchema(Joi.string().forbidden())
   @Prop()
   uri: string;
 
   @JoiSchema(
     Joi.string()
       .required()
-      .valid(
-        ...Object.values(HttpMethod).filter(
-          (v) => v !== HttpMethod.UNRECOGNIZED,
-        ),
-      ),
+      .valid(...enumValues(HttpMethod)),
   )
   @Prop({ type: String, enum: HttpMethod })
   method: HttpMethod;
 }
+
 @Schema()
 export class RtmpProviderConfigModel implements RtmpProviderConfig {
   @JoiSchema(Joi.string().required())
@@ -44,23 +41,14 @@ export class RtmpProviderConfigModel implements RtmpProviderConfig {
 
 @Schema()
 export class PipelineInputModel implements PipelineInput {
-  @JoiSchema(
-    Joi.string().valid(
-      ...Object.values(InputProtocol).filter(
-        (v) => v !== InputProtocol.UNRECOGNIZED,
-      ),
-    ),
-  )
+  
+  @JoiSchema(Joi.string().valid(InputProtocol.INPUT_RTMP))
   @Prop({ type: String, enum: InputProtocol })
   protocol: InputProtocol;
 
   @JoiSchema(
     Joi.string()
-      .valid(
-        ...Object.values(InputProvider).filter(
-          (v) => v !== InputProvider.UNRECOGNIZED,
-        ),
-      )
+      .valid(InputProvider.INPUT_INTERNAL)
       .default(InputProvider.INPUT_INTERNAL),
   )
   @Prop({ type: String, enum: InputProvider })
@@ -71,7 +59,7 @@ export class PipelineInputModel implements PipelineInput {
       is: InputProtocol.INPUT_RTMP,
       then: Joi.when('providerType', {
         is: InputProvider.INPUT_EXTERNAL,
-        then: getTypeSchema(RtmpProviderConfigDto).required(),
+        then: getTypeSchema(RtmpProviderConfigModel).required(),
         otherwise: Joi.forbidden(),
       }),
       otherwise: Joi.forbidden(),
@@ -90,23 +78,13 @@ export class PipelineInputModel implements PipelineInput {
 
 @Schema()
 export class PipelineOutputModel implements PipelineOutput {
-  @JoiSchema(
-    Joi.string().valid(
-      ...Object.values(OutputProtocol).filter(
-        (v) => v !== OutputProtocol.UNRECOGNIZED,
-      ),
-    ),
-  )
+  @JoiSchema(Joi.string().valid(...enumValues(OutputProtocol)))
   @Prop({ type: String, enum: OutputProtocol })
   protocol: OutputProtocol;
 
   @JoiSchema(
     Joi.string()
-      .valid(
-        ...Object.values(OutputProvider).filter(
-          (v) => v !== OutputProvider.UNRECOGNIZED,
-        ),
-      )
+      .valid(...enumValues(OutputProvider))
       .default(OutputProvider.OUTPUT_INTERNAL),
   )
   @Prop({ type: String, enum: OutputProvider })
@@ -117,7 +95,7 @@ export class PipelineOutputModel implements PipelineOutput {
       is: OutputProtocol.OUTPUT_RTMP,
       then: Joi.when('providerType', {
         is: OutputProvider.OUTPUT_INTERNAL,
-        then: getTypeSchema(RtmpProviderConfigDto).required(),
+        then: getTypeSchema(RtmpProviderConfigModel).required(),
         otherwise: Joi.forbidden(),
       }),
       otherwise: Joi.forbidden(),
@@ -131,7 +109,7 @@ export class PipelineOutputModel implements PipelineOutput {
       is: OutputProtocol.OUTPUT_HLS,
       then: Joi.when('providerType', {
         is: OutputProvider.OUTPUT_EXTERNAL,
-        then: getTypeSchema(HlsProviderConfigDto).required(),
+        then: getTypeSchema(HlsProviderConfigModel).required(),
         otherwise: Joi.forbidden(),
       }),
       otherwise: Joi.forbidden(),

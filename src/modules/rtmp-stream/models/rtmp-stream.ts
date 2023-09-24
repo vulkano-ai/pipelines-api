@@ -1,6 +1,7 @@
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { PipelineView, PipelineModel } from 'src/modules/pipelines/models/pipeline';
 
 export type RtmpStreamDocument = RtmpStreamModel & Document;
 
@@ -16,8 +17,22 @@ export interface RedirectBody {
   name: string;
   type: string;
 }
+
+export type RtmpStreamView = {
+  _id: string;
+  app: string;
+  status: string;
+  name: string;
+  addr: string;
+  startTs: Date;
+  endTs: Date;
+  pipeline: PipelineView;
+};
 @Schema({ timestamps: true })
 export class RtmpStreamModel {
+
+  _id: mongoose.Types.ObjectId;
+
   @Prop({ type: String, required: true })
   app: string;
 
@@ -36,8 +51,21 @@ export class RtmpStreamModel {
   @Prop({ type: Date })
   endTs: Date;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Pipeline' })
-  pipeline: mongoose.Types.ObjectId;
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'Pipeline' })
+  pipeline: PipelineModel;
+
+  view(): RtmpStreamView {
+    return {
+      _id: this._id.toString(),
+      app: this.app,
+      status: this.status,
+      name: this.name,
+      addr: this.addr,
+      startTs: this.startTs,
+      endTs: this.endTs,
+      pipeline: this.pipeline.view(),
+    };
+  }
 }
 
 const _RtmpStreamSchema = SchemaFactory.createForClass(RtmpStreamModel);

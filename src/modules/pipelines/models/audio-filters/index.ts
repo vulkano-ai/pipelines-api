@@ -1,8 +1,10 @@
 import { AudioFilter } from '@inference/inference-proto/nest';
 import { Schema } from '@nestjs/mongoose';
-import { AudioDenoiseFilterModel } from './denoise';
+import { AudioDenoiseModel } from './denoise';
+import { getTypeSchema, JoiSchema } from 'nestjs-joi';
 
 @Schema()
 export class AudioFilterModel implements AudioFilter {
-  denoise: AudioDenoiseFilterModel | undefined;
+  @JoiSchema(getTypeSchema(AudioDenoiseModel))
+  denoise: AudioDenoiseModel | undefined;
 }

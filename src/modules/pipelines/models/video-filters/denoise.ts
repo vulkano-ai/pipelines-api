@@ -1,21 +1,25 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import {
-  VideoDenoiseFilter,
+  VideoDenoise,
   VideoFilterName,
-  VideoDenoiseFilterConfig,
+  VideoDenoiseConfig,
 } from '@inference/inference-proto/nest';
-
+import { getTypeSchema, JoiSchema } from 'nestjs-joi';
+import * as Joi from 'joi';
 @Schema()
-export class VideoDenoiseConfig implements VideoDenoiseFilterConfig {
+export class VideoDenoiseConfigModel implements VideoDenoiseConfig {
+  @JoiSchema(Joi.number().min(0).max(1).required())
   @Prop({ type: Number, max: 1, min: 0 })
   strength: number;
 }
 
 @Schema()
-export class VideoDenoiseModel implements VideoDenoiseFilter {
+export class VideoDenoiseModel implements VideoDenoise {
+  @JoiSchema(Joi.string().valid(VideoFilterName.VIDEO_DENOISE).required())
   @Prop({ type: VideoFilterName, default: VideoFilterName.VIDEO_DENOISE })
   name: VideoFilterName.VIDEO_DENOISE;
 
-  @Prop()
-  config: VideoDenoiseConfig | undefined;
+  @JoiSchema(getTypeSchema(VideoDenoiseConfigModel).required())
+  @Prop({ type: VideoDenoiseConfigModel })
+  config: VideoDenoiseConfigModel | undefined;
 }
