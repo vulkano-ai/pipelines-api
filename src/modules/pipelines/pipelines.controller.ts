@@ -9,7 +9,6 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
-import { PipelineDto } from './dto/pipeline.dto';
 import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
 import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -32,12 +31,18 @@ export class PipelinesController {
     description: 'Pipeline created.',
     type: PipelineModel,
   })
-  async create(@Body() createPipelineDto: PipelineDto) {
+  async create(@Body() createPipelineDto: PipelineModel) {
     const pipeline = await this.pipelinesService.create(createPipelineDto);
     return this.pipelinesService.getPipelineView(pipeline);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Find all pipelines' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pipelines found.',
+    type: [PipelineModel],
+  })
   async findAll(@MongoQuery() query: MongoQueryModel) {
     const { rows, count } = await this.pipelinesService.find(query);
 
@@ -49,6 +54,12 @@ export class PipelinesController {
 
   @Get(':id')
   @UseFilters(PipelineNotFoundExceptionFilter)
+  @ApiOperation({ summary: 'Find pipeline by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pipeline found.',
+    type: PipelineModel,
+  })
   async findOne(@Param('id') id: string) {
     const pipeline = await this.pipelinesService.findOne(id);
     return this.pipelinesService.getPipelineView(pipeline);
@@ -56,9 +67,15 @@ export class PipelinesController {
 
   @Patch(':id')
   @UseFilters(PipelineNotFoundExceptionFilter)
+  @ApiOperation({ summary: 'Update pipeline by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pipeline updated.',
+    type: PipelineModel,
+  })
   async update(
     @Param('id') id: string,
-    @Body() updatePipelineDto: PipelineDto,
+    @Body() updatePipelineDto: PipelineModel,
   ) {
     const pipeline = await this.pipelinesService.update(id, updatePipelineDto);
     return this.pipelinesService.getPipelineView(pipeline);
@@ -66,6 +83,12 @@ export class PipelinesController {
 
   @Delete(':id')
   @UseFilters(PipelineNotFoundExceptionFilter)
+  @ApiOperation({ summary: 'Delete pipeline by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pipeline deleted.',
+    type: PipelineModel,
+  })
   async remove(@Param('id') id: string) {
     const deletedPipeline = await this.pipelinesService.remove(id);
     return this.pipelinesService.getPipelineView(deletedPipeline);
