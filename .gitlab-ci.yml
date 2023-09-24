@@ -4,13 +4,13 @@ stages:
 
 include:
   - project: 'inference/infra/cicd'
-    ref: v1.0.0
+    ref: v1.0.1
     file: '/common/rules.yml'
   - project: 'inference/infra/cicd'
-    ref: v1.0.0
+    ref: v1.0.1
     file: '/common/docker.yml'
   - project: 'inference/infra/cicd'
-    ref: v1.0.0
+    ref: v1.0.1
     file: '/jobs/nodejs.yml'
 
 variables:
