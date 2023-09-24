@@ -16,7 +16,7 @@ include:
 variables:
   IMAGE_NAME: livestream-api
   NPM_TOKEN: ${GL_TOKEN}
-
+  DOCKER_HOST: tcp://docker:2375
 
 .dev_environment:
   variables:
