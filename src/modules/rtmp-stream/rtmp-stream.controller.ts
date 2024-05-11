@@ -6,26 +6,24 @@ import {
   Post,
   Req,
   Res,
-  UnauthorizedException,
-  UseFilters,
+  UseFilters
 } from '@nestjs/common';
-import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { Request, Response } from 'express';
-import { RtmpStreamDto } from './dto/rtmp-stream.dto';
-import { RtmpStreamService, StreamStatus } from './rtmp-stream.service';
+import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+import {
+  PipelineNotFoundExceptionFilter,
+  RtmpPipelineNotFoundExceptionFilter,
+} from '../pipelines/errors';
 import { PipelinesService } from '../pipelines/pipelines.service';
+import { QueueService } from '../queue/queue.service';
+import { RtmpStreamDto } from './dto/rtmp-stream.dto';
 import {
   AlreadyPublishingExceptionFilter,
   RtmpStreamNotFoundExceptionFilter,
   UnknownRtmpAppException,
 } from './errors';
-import { MongoQuery, MongoQueryModel } from 'nest-mongo-query-parser';
-import mongoose from 'mongoose';
-import { QueueService } from '../queue/queue.service';
-import {
-  PipelineNotFoundExceptionFilter,
-  RtmpPipelineNotFoundExceptionFilter,
-} from '../pipelines/errors';
+import { RtmpStreamService } from './rtmp-stream.service';
 
 @Controller('rtmp-streams')
 export class RtmpStreamController {
@@ -57,21 +55,27 @@ export class RtmpStreamController {
     @Res() response: Response,
     @Req() request: Request,
   ) {
-    const addr = request.socket.remoteAddress.replace('::ffff:', '');
-    const streamKey = body.name; // streamKey
+    try{
+      const addr = request.socket.remoteAddress.replace('::ffff:', '');
+      const streamKey = body.name; // streamKey
 
-    this.logger.info(
-      { body },
-      `Stream redirect received: ${addr}, streamKey: ${streamKey}`,
-    );
+      this.logger.info(
+        { body },
+        `Stream redirect received: ${addr}, streamKey: ${streamKey}`,
+      );
 
-    const stream = await this.rtmpStreamService.streamConnect(
-      streamKey,
-      addr,
-      body,
-    );
-    this.logger.info({ stream }, 'Stream created');
-    response.sendStatus(200);
+      const stream = await this.rtmpStreamService.streamConnect(
+        streamKey,
+        addr,
+        body,
+      );
+      this.logger.info({ stream }, 'Stream created');
+      response.sendStatus(200);
+    }
+    catch(e){
+      this.logger.error(e);
+      throw new UnknownRtmpAppException();
+    }
   }
 
   @Post('/app/publish_done')

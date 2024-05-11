@@ -14,6 +14,7 @@ import { rabbitMqConfigFactory } from '../../config';
       imports: [ConfigModule],
       useFactory: rabbitMqConfigFactory,
       inject: [ConfigService],
+      exports: [],
     }),
     TerminusModule,
   ],

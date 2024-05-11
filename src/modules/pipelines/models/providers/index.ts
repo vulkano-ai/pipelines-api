@@ -41,7 +41,7 @@ export class RtmpProviderConfigModel implements RtmpProviderConfig {
 
 @Schema()
 export class PipelineInputModel implements PipelineInput {
-  
+
   @JoiSchema(Joi.string().valid(InputProtocol.INPUT_RTMP))
   @Prop({ type: String, enum: InputProtocol })
   protocol: InputProtocol;

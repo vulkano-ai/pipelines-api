@@ -13,6 +13,7 @@ import { QueueService } from './queue.service';
       imports: [ConfigModule],
       useFactory: rabbitMqConfigFactory,
       inject: [ConfigService],
+      exports: [],
     }),
   ],
   exports: [QueueService],
